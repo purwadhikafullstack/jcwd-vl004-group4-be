@@ -1,14 +1,14 @@
 module.exports = {
-    HOST: 'localhost',
-    USER: 'root',
-    PASSWORD: 'naufal11',
-    DB: 'pharmacyapp_db_4',
-    dialect: 'mysql',
+  HOST: "localhost",
+  USER: "root",
+  PASSWORD: "Purw4dh1k@",
+  DB: "pharmacyapp_db_4",
+  dialect: "mysql",
 
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    }
-}
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000,
+  },
+};
