@@ -1,7 +1,8 @@
-const route = require('express').Router()
-const cartControlller = require('../controllers/cartController')
+const cartController = require("../controllers/cartController");
+const router = require("express").Router();
 
+router.put("/", cartController.replaceCart);
+router.patch("/", cartController.updateCartRow);
+router.get("/", cartController.getCartByUserId);
 
-
-
-module.exports = route
+module.exports = router;
