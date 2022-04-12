@@ -21,6 +21,7 @@ const addProduct = async (req, res) => {
     sell_price: req.body.sell_price,
     description: req.body.description,
     image: req.file.path,
+    bottle_capacity: req.body.bottle_capacity,
     categoryId: req.body.categoryId,
   };
 

@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       bottle_capacity: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       buy_price: {
         type: DataTypes.INTEGER,
