@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(bearerToken());
-app.use(express.static("public"));
+
 
 app.use('/public', express.static('public'))
 
