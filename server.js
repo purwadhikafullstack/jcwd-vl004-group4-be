@@ -8,6 +8,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use('/public', express.static('public'))
+
 // routers
 const productRouter = require("./routers/productRouter");
 const categoryRouter = require("./routers/categoryRouter");
