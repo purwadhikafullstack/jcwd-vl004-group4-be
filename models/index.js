@@ -73,8 +73,8 @@ db.carts.belongsTo(db.products);
 db.users.hasOne(db.invoice_headers);
 db.invoice_headers.belongsTo(db.users);
 
-db.invoice_headers.hasOne(db.admins);
-db.admins.belongsTo(db.invoice_headers);
+db.admins.hasOne(db.invoice_headers);
+db.invoice_headers.belongsTo(db.admins);
 
 db.invoice_headers.hasOne(db.couriers);
 db.couriers.belongsTo(db.invoice_headers);
