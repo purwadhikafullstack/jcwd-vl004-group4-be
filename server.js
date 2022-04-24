@@ -11,7 +11,8 @@ app.use(express.json());
 app.use(cors());
 app.use(bearerToken());
 
-app.use("/public", express.static(path.join(__dirname, "public")));
+
+app.use('/public', express.static('public'))
 
 // routers
 const productRouter = require("./routers/productRouter");
@@ -19,6 +20,7 @@ const categoryRouter = require("./routers/categoryRouter");
 const userRouter = require("./routers/userRouter");
 const adminRouter = require("./routers/adminRouter");
 const cartRouter = require("./routers/cartRouter");
+const courierRouter = require('./routers/courierRouter');
 
 // main routes
 app.use("/products", productRouter);
@@ -26,6 +28,7 @@ app.use("/category", categoryRouter);
 app.use("/users", userRouter);
 app.use("/admin", adminRouter);
 app.use("/cart", cartRouter);
+app.use('/courier', courierRouter)
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "welcome to my api" });
