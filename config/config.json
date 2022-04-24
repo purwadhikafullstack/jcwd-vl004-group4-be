@@ -1,11 +1,18 @@
-
 {
   "development": {
     "username": "root",
-    "password": "naufal11",
-    "database": "pharmacyapp_db_4",
+    "password": "maysql31",
+    "database": "pharmacyapp_test",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "+07:00",
+
+    "pool": {
+      "max": 5,
+      "min": 0,
+      "acquire": 30000,
+      "idle": 10000
+    }
   },
   "test": {
     "username": "root",

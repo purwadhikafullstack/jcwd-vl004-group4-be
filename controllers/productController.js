@@ -1,8 +1,9 @@
 const db = require("../models");
 const multer = require("multer");
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 // path : access and intereact with the file system
 const path = require("path");
+const { off } = require("process");
 
 // create main Model
 const Product = db.products;
@@ -34,8 +35,49 @@ const addProduct = async (req, res) => {
 
 // 2. get all products
 const getAllProducts = async (req, res) => {
+  let filters = {};
+  // if (req.query.category) filters["$Category.name$"] = req.query.category;
+  // if (req.query.bottle_capacity)
+  //   filters.bottle_capacity = req.query.bottle_capacity;
+
+  if (req.query.bottle_capacity) {
+    let arrayOfBottleCap = req.query.bottle_capacity.split(",");
+    filters.bottle_capacity = { [Op.in]: arrayOfBottleCap };
+  }
+  if (req.query.category) {
+    let arrayOfCategory = req.query.category.split(",");
+    filters["$Category.name$"] = {
+      [Op.in]: arrayOfCategory,
+    };
+  }
+
+  if (req.query.search)
+    filters.name = {
+      [Op.substring]: req.query.search,
+    };
+
+  // by default it will sort by name and asc
+  let sort = ["name", "ASC"];
+  if (req.query.sortField && req.query.sortDirection)
+    sort = [req.query.sortField, req.query.sortDirection];
+
+  // by default limit is 15
+  let limit = 3;
+  if (req.query.limit) limit = +req.query.limit;
+
+  // by default offset is 0
+  let offset = 0;
+  if (req.query.offset) offset = +req.query.offset;
+
   // Model.findAll() : read the whole products table
-  let allProducts = await Product.findAll();
+  let allProducts = await Product.findAndCountAll({
+    include: Category,
+    where: filters,
+    order: [sort],
+    limit: limit,
+    offset: offset,
+  });
+
   res.status(200).send(allProducts);
 };
 
@@ -60,12 +102,10 @@ const deleteProduct = async (req, res) => {
 
   await Product.destroy({ where: { id: id } });
   const product = await Product.findAll({});
-  res
-    .status(200)
-    .send({
-      message: `product with id: ${id} has been deleted`,
-      data: product,
-    });
+  res.status(200).send({
+    message: `product with id: ${id} has been deleted`,
+    data: product,
+  });
 };
 
 // restore soft deleted product

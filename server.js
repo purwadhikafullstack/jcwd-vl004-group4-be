@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const bearerToken = require("express-bearer-token");
 const PORT = process.env.PORT || 5000;
@@ -10,8 +11,7 @@ app.use(express.json());
 app.use(cors());
 app.use(bearerToken());
 
-
-app.use('/public', express.static('public'))
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 // routers
 const productRouter = require("./routers/productRouter");
