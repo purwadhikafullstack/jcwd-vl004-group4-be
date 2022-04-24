@@ -1,6 +1,7 @@
 const { createOrUpdate } = require("../helper/sqlhelper");
 const db = require("../models");
 const Cart = db.carts;
+const User = db.users
 
 const getCartByUserId = async (req, res) => {
     if (!req.query.userId)
