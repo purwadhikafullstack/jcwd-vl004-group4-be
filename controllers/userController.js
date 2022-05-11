@@ -5,6 +5,7 @@ const { sequelize } = require("../models");
 const Crypto = require("crypto");
 
 const User = db.users;
+const Cart = db.carts
 
 const addUser = async (req, res) => {
   let info = {
@@ -97,6 +98,7 @@ const getUser = async (req, res) => {
       email: info.email,
       password: info.password,
     },
+    include: Cart
   });
 
   if (user === null) {
@@ -194,7 +196,7 @@ const resetPasswordUser = async (req, res) => {
 
 const userKeepLogin = async (req, res) => {
   try {
-    const keepLogin = await User.findByPk(req.user.id);
+    const keepLogin = await User.findByPk(req.user.id, { include: Cart });
     // res.status(200).send(keepLogin);
     let {
       id,
