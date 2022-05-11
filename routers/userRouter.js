@@ -12,5 +12,8 @@ router.patch(
   resetPassword,
   userController.resetPasswordUser
 );
+router.get("/get-user-byId/:id", userController.getUserById);
+router.patch("/edit-user/:id", userController.editUserData);
+router.patch("/edit-user-address/:id", userController.editUserAddress);
 
 module.exports = router;

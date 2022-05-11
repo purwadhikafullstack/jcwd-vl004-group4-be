@@ -5,13 +5,16 @@ const { sequelize } = require("../models");
 const Crypto = require("crypto");
 
 const User = db.users;
-const Cart = db.carts
+const Cart = db.carts;
+const Address = db.addresses;
 
 const addUser = async (req, res) => {
   let info = {
+    name: req.body.name,
     email: req.body.email,
     username: req.body.username,
     password: req.body.password,
+    phone: req.body.phone,
   };
 
   try {
@@ -98,7 +101,7 @@ const getUser = async (req, res) => {
       email: info.email,
       password: info.password,
     },
-    include: Cart
+    include: Cart,
   });
 
   if (user === null) {
@@ -232,6 +235,59 @@ const userKeepLogin = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  const id = req.params.id;
+  try {
+    let user = await User.findOne({ where: { id: id }, include: Address });
+    res.status(200).send(user);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+const editUserData = async (req, res) => {
+  const id = +req.params.id;
+  try {
+    let { name, username, phone } = req.body;
+    let dataUpdate = [];
+
+    for (let prop in req.body) {
+      dataUpdate.push(`${prop} = '${req.body[prop]}'`);
+    }
+    let user = await sequelize.query(
+      `UPDATE users set ${dataUpdate} where id = ${id};`
+    );
+    let updatedUser = await User.findOne({
+      where: { id: id },
+      include: Address,
+    });
+    res.status(200).send({ user: updatedUser, message: "Profile updated" });
+    // console.log(user);
+  } catch (error) {
+    res.status(500).send(error.message);
+    console.log(error.message);
+  }
+};
+
+const editUserAddress = async (req, res) => {
+  const userId = +req.params.id;
+  const addressId = req.body.id;
+  try {
+    let { street, district, city, province, postal_code } = req.body;
+
+    let address = await Address.update(req.body, {
+      where: { userId: userId, id: addressId },
+    });
+    let updatedAddress = await Address.findOne({
+      where: { userId: userId, id: addressId },
+    });
+
+    res.status(200).send(updatedAddress);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 module.exports = {
   addUser,
   verifUser,
@@ -239,4 +295,7 @@ module.exports = {
   forgotPasswordUser,
   resetPasswordUser,
   userKeepLogin,
+  getUserById,
+  editUserData,
+  editUserAddress,
 };
