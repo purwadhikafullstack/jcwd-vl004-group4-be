@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      disctrict: {
+      district: {
         type: DataTypes.STRING,
         allowNull: false,
       },

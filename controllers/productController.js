@@ -145,12 +145,12 @@ const upload = multer({
 
 const DFAllProducts = async (req, res) => {
   try {
-    const allProducts = await Product.findAll({ include: Category })
-    res.status(200).send(allProducts)
+    const allProducts = await Product.findAll({ include: Category });
+    res.status(200).send(allProducts);
   } catch (error) {
-    res.status(400).send(`error: ${error}`)
+    res.status(400).send(`error: ${error}`);
   }
-}
+};
 
 module.exports = {
   addProduct,
@@ -160,5 +160,5 @@ module.exports = {
   deleteProduct,
   restoreProduct,
   upload,
-  DFAllProducts
+  DFAllProducts,
 };

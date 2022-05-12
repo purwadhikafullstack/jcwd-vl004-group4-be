@@ -6,7 +6,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: {
+          args: true,
+          msg: "Full name required",
+        },
+        isAlphanumeric: {
+          args: true,
+          msg: "Invalid name",
+        },
       },
       email: {
         type: DataTypes.STRING,
@@ -48,7 +55,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       phone: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: {
+          args: false,
+          msg: "Phone number required",
+        },
+        isNumeric: {
+          args: true,
+          msg: "Invalid phone number",
+        },
       },
       status: {
         type: DataTypes.STRING,
