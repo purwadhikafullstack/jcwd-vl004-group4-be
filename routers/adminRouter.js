@@ -11,5 +11,8 @@ router.patch(
   resetPassword,
   adminController.resetPasswordAdmin
 );
+router.get("/get-all-user", adminController.getAllUser);
+router.patch("/deactivate-user", adminController.deactivateUser);
+router.patch("/activate-user", adminController.activateUser);
 
 module.exports = router;

@@ -2,8 +2,10 @@ const db = require("../models");
 const { createToken } = require("../helper/createToken");
 const Crypto = require("crypto");
 const transporter = require("../helper/nodemailer");
+const { sequelize } = require("../models");
 
 const Admin = db.admins;
+const User = db.users;
 
 const getAdmin = async (req, res) => {
   let info = {
@@ -125,10 +127,50 @@ const adminKeepLogin = async (req, res) => {
   }
 };
 
+const getAllUser = async (req, res) => {
+  try {
+    const allUser = await User.findAll();
+    res.status(200).send(allUser);
+  } catch (error) {
+    res.status(error.message);
+  }
+};
+
+const deactivateUser = async (req, res) => {
+  try {
+    const deactivate = await sequelize.query(
+      `Update users set is_active = '0' where id = ${req.body.id};`
+    );
+    const allUser = await User.findAll();
+    res
+      .status(200)
+      .send({ message: "Account deactivated", success: "true", data: allUser });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+const activateUser = async (req, res) => {
+  try {
+    const activate = await sequelize.query(
+      `Update users set is_active = '1' where id = ${req.body.id};`
+    );
+    const allUser = await User.findAll();
+    res
+      .status(200)
+      .send({ message: "Account activated", success: "true", data: allUser });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 module.exports = {
   getAdmin,
   addAdmin,
   forgotPasswordAdmin,
   resetPasswordAdmin,
   adminKeepLogin,
+  getAllUser,
+  deactivateUser,
+  activateUser,
 };
