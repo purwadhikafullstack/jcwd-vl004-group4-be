@@ -21,6 +21,9 @@ const userRouter = require("./routers/userRouter");
 const adminRouter = require("./routers/adminRouter");
 const cartRouter = require("./routers/cartRouter");
 const courierRouter = require('./routers/courierRouter');
+const checkoutRouter = require('./routers/checkoutRouter')
+const paymentRouter = require('./routers/paymentRouter')
+
 
 // main routes
 app.use("/products", productRouter);
@@ -29,6 +32,8 @@ app.use("/users", userRouter);
 app.use("/admin", adminRouter);
 app.use("/cart", cartRouter);
 app.use('/courier', courierRouter)
+app.use('/checkout', checkoutRouter)
+app.use('/payment', paymentRouter)
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "welcome to my api" });

@@ -110,7 +110,7 @@ const DFDeleteCart = async (req, res) => {
         })
         return total
     }
-    res.status(200).send({ count: totalQty, subTotal: subTotal(), remainingCart: remainingCart })
+    res.status(200).send({ count: totalQty, subTotal: subTotal(), remainingCart: remainingCart, length: remainingCart.length })
 }
 
 const DFUpdate = async (req, res) => {
