@@ -24,8 +24,8 @@ module.exports = {
           phone: "123133",
           email: "snow@test.com",
           username: "snow",
-          password: "snow",
-          status: "active",
+          password: "82efc95a5d383efcb3ae3f29337f255fe72c9d02", // hash of 'Snow123#'
+          status: "verified",
           createdAt: "2022-04-01T10:00",
           updatedAt: "2022-04-01T10:00",
         },
