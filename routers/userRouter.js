@@ -12,5 +12,13 @@ router.patch(
   resetPassword,
   userController.resetPasswordUser
 );
+router.get("/get-user-byId/:id", userController.getUserById);
+router.get("/get-address-byUserId/:id", userController.getAddressById);
+router.patch("/edit-user/:id", userController.editUserData);
+router.post("/check-password/:id", userController.checkPassword);
+router.patch("/change-password/:id", userController.changePassword);
+router.post("/add-user-address/:id", userController.addUserAddress);
+router.patch("/edit-user-address/:id", userController.editUserAddress);
+router.delete("/delete-user-address/:id", userController.deleteAddress);
 
 module.exports = router;

@@ -1,11 +1,8 @@
 const productController = require("../controllers/productController");
 const router = require("express").Router();
 
-router.post(
-  "/add-product",
-  productController.upload,
-  productController.addProduct
-);
+
+router.post("/add-product", productController.upload, productController.addProduct);
 
 router.get("/get-all-products", productController.getAllProducts);
 
@@ -18,5 +15,9 @@ router.patch("/update-product/:id", productController.updateProduct);
 router.delete("/delete-product/:id", productController.deleteProduct);
 
 router.post("/restore-product/:id", productController.restoreProduct);
+
+
+// daffa
+router.get('/all-products', productController.DFAllProducts)
 
 module.exports = router;

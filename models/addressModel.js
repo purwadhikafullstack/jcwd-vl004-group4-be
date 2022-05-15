@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      disctrict: {
+      district: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       postal_code: {
         type: DataTypes.INTEGER,
         allowNull: false,
+      },
+      is_default: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     {

@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const Sequelize = require("sequelize");
-const { DataTypes } = require("sequelize");
+const { DataTypes, Sequelize } = require("sequelize");
 const env = process.env.NODE_ENV || "development";
 const config = require(__dirname + "/../config/config.json")[env];
 
@@ -20,7 +19,7 @@ if (config.use_env_variable) {
 
 // const dbConfig = require("../config/dbConfig");
 
-// sequelize: instance of Sequelize : represent connection to DB
+// // sequelize: instance of Sequelize : represent connection to DB
 // const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 //   host: dbConfig.HOST,
 //   dialect: dbConfig.dialect,

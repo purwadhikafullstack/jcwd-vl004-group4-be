@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
+      is_super_admin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       hooks: {

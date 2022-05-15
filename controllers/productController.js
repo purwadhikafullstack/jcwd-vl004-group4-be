@@ -6,6 +6,7 @@ const path = require("path");
 const { QueryTypes } = require("sequelize");
 const { sequelize } = require("../models");
 
+
 // create main Model
 const Product = db.products;
 const Category = db.categories;
@@ -164,6 +165,15 @@ const upload = multer({
   },
 }).single("image");
 
+const DFAllProducts = async (req, res) => {
+  try {
+    const allProducts = await Product.findAll({ include: Category });
+    res.status(200).send(allProducts);
+  } catch (error) {
+    res.status(400).send(`error: ${error}`);
+  }
+};
+
 module.exports = {
   addProduct,
   getAllProducts,
@@ -173,4 +183,5 @@ module.exports = {
   restoreProduct,
   upload,
   getBestSeller,
+  DFAllProducts,
 };
