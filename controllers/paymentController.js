@@ -5,6 +5,7 @@ const path = require('path')
 const paymentConfirmation = db.payment_confirmations
 const Cart = db.carts
 const InvoiceHeader = db.invoice_headers
+const InvoiceDetail = db.invoice_details
 
 const add = async (req, res) => {
 
@@ -17,6 +18,11 @@ const add = async (req, res) => {
     const userId = +req.params.userId
 
     const payment = await paymentConfirmation.create(data)
+    await InvoiceHeader.update(
+        { status: 'pending' },
+        { where: { userId: userId } }
+    )
+
     await Cart.destroy({ where: { userId: userId } })
     res.status(201).send('Your payment has been recorded')
     console.log(payment)
@@ -26,7 +32,10 @@ const add = async (req, res) => {
 const getinvoiceheaderId = async (req, res) => {
     const userId = +req.params.userId
 
-    const invoiceHeader = await InvoiceHeader.findOne({ where: { userId: userId } })
+    const invoiceHeader = await InvoiceHeader.findOne({
+        where: { userId: userId },
+        order: [['createdAt', 'DESC']]
+    })
     res.status(200).send(invoiceHeader)
 }
 
@@ -56,9 +65,26 @@ const upload = multer({
     },
 }).single("image");
 
+const cancelCheckout = async (req, res) => {
+
+    const userId = +req.params.userId
+    const header = await InvoiceHeader.findOne({ where: { userId: userId } })
+
+    const deletedDetail = await InvoiceDetail.destroy({
+        where: { invoiceHeaderId: header.id },
+        order: [['createdAt', 'DESC']]
+    })
+    const deletedHeader = await InvoiceHeader.destroy({ where: { status: 'unpaid' } })
+    const deletedCart = await Cart.destroy({ where: { userId: userId } })
+
+    res.status(200).send({ deletedDetail, deletedHeader, deletedCart, message: 'Your checkout has been canceled!' })
+
+}
+
 module.exports = {
     add,
     getinvoiceheaderId,
+    cancelCheckout,
     upload
 
 }

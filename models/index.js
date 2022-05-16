@@ -62,9 +62,9 @@ db.payment_confirmations = require("./paymentConfirmationModel")(
 db.invoice_details = require("./invoiceDetailModel")(sequelize, DataTypes);
 
 // sync all model at once
-db.sequelize.sync({ force: false }).then(() => {
-  console.log(`re-sync done!`);
-});
+// db.sequelize.sync({ alter: true }).then(() => {
+//   console.log(`re-sync done!`);
+// });
 
 // relations
 db.categories.hasMany(db.products);
@@ -91,8 +91,8 @@ db.carts.belongsTo(db.products);
 db.users.hasOne(db.invoice_headers);
 db.invoice_headers.belongsTo(db.users);
 
-db.admins.hasOne(db.invoice_headers);
-db.invoice_headers.belongsTo(db.admins);
+// db.admins.hasOne(db.invoice_headers);
+// db.invoice_headers.belongsTo(db.admins);
 
 db.invoice_headers.hasOne(db.couriers);
 db.couriers.belongsTo(db.invoice_headers);
@@ -103,7 +103,7 @@ db.payment_confirmations.belongsTo(db.invoice_headers);
 db.admins.hasOne(db.payment_confirmations);
 db.payment_confirmations.belongsTo(db.admins);
 
-db.invoice_headers.hasMany(db.invoice_details);
+db.invoice_headers.hasMany(db.invoice_details, { onDelete: 'cascade' });
 db.invoice_details.belongsTo(db.invoice_headers);
 
 // product sama invoice-detail ??????

@@ -1,9 +1,10 @@
 const { createOrUpdate } = require("../helper/sqlhelper");
 const db = require("../models");
 const Cart = db.carts;
-const User = db.users;
-const Product = db.products;
-const Category = db.categories;
+const User = db.users
+const Product = db.products
+const Category = db.categories
+const InvoiceHeader = db.invoice_headers
 
 const getCartByUserId = async (req, res) => {
   console.log(req.path);
@@ -44,21 +45,24 @@ const updateCartRow = async (req, res) => {
 
 // Daffa
 const DFGetCartItems = async (req, res) => {
-  const userId = +req.params.id;
-  const { rows, count } = await Cart.findAndCountAll({
-    where: { userId: userId },
-    include: { model: Product, include: Category },
-  });
-  const cartCount = await Cart.sum("qty", { where: { userId: userId } });
+  const userId = +req.params.id
+  const { rows, count } = await Cart.findAndCountAll({ where: { userId: userId }, include: { model: Product, include: Category, } })
+  const cartCount = await Cart.sum('qty', { where: { userId: userId } })
+  const unpaidInvoice = await InvoiceHeader.findOne({ where: { userId: userId, status: 'unpaid' } })
+  console.log(unpaidInvoice)
   const cartPrice = () => {
-    let totalPrice = 0;
-    rows.forEach((item) => {
-      totalPrice += item.product.sell_price * item.qty;
-    });
-    return totalPrice;
-  };
-  res.status(200).send({ rows, count, cartCount, totalPrice: cartPrice() });
-};
+    let totalPrice = 0
+    rows.forEach(item => {
+      totalPrice += item.product.sell_price * item.qty
+    })
+    return totalPrice
+  }
+  const result = { rows, count, cartCount, totalPrice: cartPrice() }
+  if (unpaidInvoice) {
+    result.unpaidInvoice = unpaidInvoice
+  }
+  res.status(200).send(result)
+}
 
 const DFAddcart = async (req, res) => {
   const data = {
@@ -103,21 +107,21 @@ const DFAddcart = async (req, res) => {
 };
 
 const DFDeleteCart = async (req, res) => {
-    const id = +req.params.id
-    const userId = +req.params.userId
-    await Cart.destroy({ where: { id: id } })
-    const remainingCart = await Cart.findAll({ where: { userId: userId }, include: { model: Product, include: Category } })
-    // res.status(200).send({ message: `Item with id: ${id} has been deleted`, items: remainingCart, count: remainingCart.length })
-    const { rows, count } = await Cart.findAndCountAll({ where: { userId: userId }, include: { model: Product, include: Category } })
-    const totalQty = await Cart.sum('qty', { where: { userId, userId } })
-    const subTotal = () => {
-        let total = 0
-        remainingCart.forEach(item => {
-            total += item.product.sell_price * item.qty
-        })
-        return total
-    }
-    res.status(200).send({ count: totalQty, subTotal: subTotal(), remainingCart: remainingCart, length: remainingCart.length })
+  const id = +req.params.id
+  const userId = +req.params.userId
+  await Cart.destroy({ where: { id: id } })
+  const remainingCart = await Cart.findAll({ where: { userId: userId }, include: { model: Product, include: Category } })
+  // res.status(200).send({ message: `Item with id: ${id} has been deleted`, items: remainingCart, count: remainingCart.length })
+  const { rows, count } = await Cart.findAndCountAll({ where: { userId: userId }, include: { model: Product, include: Category } })
+  const totalQty = await Cart.sum('qty', { where: { userId, userId } })
+  const subTotal = () => {
+    let total = 0
+    remainingCart.forEach(item => {
+      total += item.product.sell_price * item.qty
+    })
+    return total
+  }
+  res.status(200).send({ count: totalQty, subTotal: subTotal(), remainingCart: remainingCart, length: remainingCart.length })
 }
 
 const DFUpdate = async (req, res) => {
