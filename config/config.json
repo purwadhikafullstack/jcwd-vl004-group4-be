@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "maysql31",
-    "database": "pharmacyapp_test",
+    "database": "pharmacyapp_db_4",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "timezone": "+07:00",

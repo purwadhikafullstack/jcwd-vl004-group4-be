@@ -6,6 +6,8 @@ router.post("/add-product", productController.upload, productController.addProdu
 
 router.get("/get-all-products", productController.getAllProducts);
 
+router.get("/get-best-seller", productController.getBestSeller);
+
 router.get("/get-product-byId/:id", productController.getProductById);
 
 router.patch("/update-product/:id", productController.updateProduct);

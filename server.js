@@ -1,5 +1,4 @@
 const express = require("express");
-const path = require("path");
 const cors = require("cors");
 const bearerToken = require("express-bearer-token");
 const PORT = process.env.PORT || 5000;
@@ -23,6 +22,8 @@ const cartRouter = require("./routers/cartRouter");
 const courierRouter = require('./routers/courierRouter');
 const checkoutRouter = require('./routers/checkoutRouter')
 const paymentRouter = require('./routers/paymentRouter')
+const transactionRouter = require('./routers/transactionRouter')
+const reportRouter = require('./routers/reportRouter')
 
 
 // main routes
@@ -34,6 +35,8 @@ app.use("/cart", cartRouter);
 app.use('/courier', courierRouter)
 app.use('/checkout', checkoutRouter)
 app.use('/payment', paymentRouter)
+app.use('/transaction', transactionRouter)
+app.use('/report', reportRouter)
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "welcome to my api" });
