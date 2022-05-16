@@ -7,4 +7,6 @@ router.post('/add-payment/:userId', paymentController.upload, paymentController.
 
 router.post('/get-header-id/:userId', paymentController.getinvoiceheaderId)
 
+router.delete('/cancel-checkout/:userId', paymentController.cancelCheckout)
+
 module.exports = router
