@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "Purw4dh1k@",
+    "password": "naufal11",
     "database": "pharmacyapp_db_4",
     "host": "127.0.0.1",
     "dialect": "mysql",
