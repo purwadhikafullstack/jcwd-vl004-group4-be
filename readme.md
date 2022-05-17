@@ -36,7 +36,7 @@ npx sequelize-cli db:seed --seed .\seeders\05_dummy-products.js
 Undo changes made by most recent seeder,
 
 ```
-npx sequelize-cli db:seed:undo --seed .\seeders\10_dummy-invoices.js  
+npx sequelize-cli db:seed:undo --seed .\seeders\10_dummy-invoices.js
 ```
 
 ## Create a new Seeder
