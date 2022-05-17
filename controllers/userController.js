@@ -394,8 +394,8 @@ const getTransactionHistory = async (req, res) => {
           model: InvoiceDetails,
           include: { model: Products },
         },
-        { model: Payments },
       ],
+      order: [["id", "DESC"]],
     });
     res.status(200).send(invoice);
   } catch (error) {
