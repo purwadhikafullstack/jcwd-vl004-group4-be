@@ -24,7 +24,7 @@ const add = async (req, res) => {
     )
 
     await Cart.destroy({ where: { userId: userId } })
-    res.status(201).send('Your payment has been recorded')
+    res.status(201).send('Your payment has been recorded and can be seen in history transaction')
     console.log(payment)
 }
 
@@ -68,13 +68,16 @@ const upload = multer({
 const cancelCheckout = async (req, res) => {
 
     const userId = +req.params.userId
-    const header = await InvoiceHeader.findOne({ where: { userId: userId } })
+    const header = await InvoiceHeader.findOne({
+        where: { userId: userId },
+        order: [['createdAt', 'DESC']]
+    })
 
     const deletedDetail = await InvoiceDetail.destroy({
         where: { invoiceHeaderId: header.id },
         order: [['createdAt', 'DESC']]
     })
-    const deletedHeader = await InvoiceHeader.destroy({ where: { status: 'unpaid' } })
+    const deletedHeader = await InvoiceHeader.destroy({ where: { status: 'unpaid', userId: userId } })
     const deletedCart = await Cart.destroy({ where: { userId: userId } })
 
     res.status(200).send({ deletedDetail, deletedHeader, deletedCart, message: 'Your checkout has been canceled!' })
