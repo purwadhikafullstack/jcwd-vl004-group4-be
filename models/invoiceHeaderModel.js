@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
         total_price: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        status: {
+            type: DataTypes.STRING,
+            defaultValue: 'unpaid'
         }
     })
 

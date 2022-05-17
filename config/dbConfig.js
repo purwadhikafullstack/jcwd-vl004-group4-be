@@ -3,7 +3,7 @@
 module.exports = {
   HOST: "localhost",
   USER: "root",
-  PASSWORD: "Purw4dh1k@",
+  PASSWORD: "naufal11",
   DB: "pharmacyapp_db_4",
   dialect: "mysql",
 
