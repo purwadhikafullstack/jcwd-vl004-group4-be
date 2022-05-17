@@ -14,11 +14,21 @@ const modify_transaction = async (req, res) => {
     return res.status(400).send({ message: "adminId, headerId is required" });
 
   try {
+    // set is_confirmed and adminId in payment_confirmation
     let result = await PaymentConfirm.update(
       { is_confirmed: req.body.is_confirmed, adminId: req.body.adminId },
       {
         where: {
           invoiceHeaderId: req.body.headerId,
+        },
+      }
+    );
+    // set adminId in order_headers
+    result = await InvoiceHeaders.update(
+      { adminId: req.body.adminId },
+      {
+        where: {
+          id: req.body.headerId,
         },
       }
     );
@@ -30,6 +40,9 @@ const modify_transaction = async (req, res) => {
 };
 
 const getDisplayTransaction = async (req, res) => {
+  if (!req.query.adminId)
+    return res.status(400).send({ message: "adminId is required" });
+
   console.log(req.query);
   let date = new Date();
   let max = date.toISOString().slice(0, 19).replace("T", " ");

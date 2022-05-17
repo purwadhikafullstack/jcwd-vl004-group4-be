@@ -1,6 +1,6 @@
 const db = require("../models");
 const { sequelize } = require("../models");
-const { QueryTypes } = require("sequelize");
+const { QueryTypes, Op } = require("sequelize");
 const InvoiceHeaders = db.invoice_headers;
 const InvoiceDetails = db.invoice_details;
 const Products = db.products;
@@ -21,37 +21,30 @@ const getDisplayReport = async (req, res) => {
   if (req.query.offset) offset = +req.query.offset;
 
   const rowCount = await InvoiceHeaders.count({
-    include: [
-      {
-        model: PaymentConfirm,
-        required: true,
-        where: {
-          is_confirmed: 1, // only include confirmed invoices in report
-        },
+    where: {
+      adminId: {
+        [Op.ne]: null, // only include confirmed invoices in report
       },
-    ],
+    },
   });
 
   // Model.findAll() : read the whole products table
   let items = await InvoiceHeaders.findAll({
     limit: limit,
     offset: offset,
-    // order: [["createdAt", "DESC"]],
     include: [
       Users,
-      {
-        model: PaymentConfirm,
-        required: true,
-        where: {
-          is_confirmed: 1, // only include confirmed invoices in report
-        },
-      },
       Admins,
       {
         model: InvoiceDetails,
         include: [Products],
       },
     ],
+    where: {
+      adminId: {
+        [Op.ne]: null, // only include confirmed invoices in report
+      },
+    },
   });
 
   res.status(200).send({
@@ -62,6 +55,9 @@ const getDisplayReport = async (req, res) => {
 };
 
 const getSummaryReport = async (req, res) => {
+  if (!req.query.adminId)
+    return res.status(400).send({ message: "adminId is required" });
+
   let date = new Date();
   let max = date.toISOString().slice(0, 19).replace("T", " ");
 
