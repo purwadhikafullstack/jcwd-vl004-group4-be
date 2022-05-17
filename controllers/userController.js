@@ -1,12 +1,16 @@
 const db = require("../models");
 const { createToken } = require("../helper/createToken");
 const transporter = require("../helper/nodemailer");
-const { sequelize } = require("../models");
+const { sequelize, invoice_headers } = require("../models");
 const Crypto = require("crypto");
 
 const User = db.users;
 const Cart = db.carts;
 const Address = db.addresses;
+const InvoiceDetails = db.invoice_details;
+const InvoiceHeaders = db.invoice_headers;
+const Products = db.products;
+const Payments = db.payment_confirmations;
 
 const addUser = async (req, res) => {
   let info = {
@@ -74,7 +78,7 @@ const addUser = async (req, res) => {
       });
     }
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(500).send({ message: err.errors[0].message });
   }
 };
 
@@ -136,6 +140,9 @@ const getUser = async (req, res) => {
 
     if (status !== "verified") {
       res.status(500).send({ message: "Your account is not verified" });
+    }
+    if (!is_active) {
+      res.status(500).send({ message: "Your account is banned" });
     } else {
       res
         .status(200)
@@ -377,6 +384,25 @@ const getAddressById = async (req, res) => {
   }
 };
 
+const getTransactionHistory = async (req, res) => {
+  const userId = +req.params.id;
+  try {
+    let invoice = await InvoiceHeaders.findAll({
+      where: { userId: userId },
+      include: [
+        {
+          model: InvoiceDetails,
+          include: { model: Products },
+        },
+        { model: Payments },
+      ],
+    });
+    res.status(200).send(invoice);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 module.exports = {
   addUser,
   verifUser,
@@ -392,4 +418,5 @@ module.exports = {
   editUserAddress,
   deleteAddress,
   getAddressById,
+  getTransactionHistory,
 };

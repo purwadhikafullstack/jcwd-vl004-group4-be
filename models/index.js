@@ -103,7 +103,7 @@ db.payment_confirmations.belongsTo(db.invoice_headers);
 db.admins.hasOne(db.payment_confirmations);
 db.payment_confirmations.belongsTo(db.admins);
 
-db.invoice_headers.hasMany(db.invoice_details, { onDelete: 'cascade' });
+db.invoice_headers.hasMany(db.invoice_details, { onDelete: "cascade" });
 db.invoice_details.belongsTo(db.invoice_headers);
 
 // product sama invoice-detail ??????

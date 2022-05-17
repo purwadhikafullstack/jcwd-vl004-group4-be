@@ -20,5 +20,9 @@ router.patch("/change-password/:id", userController.changePassword);
 router.post("/add-user-address/:id", userController.addUserAddress);
 router.patch("/edit-user-address/:id", userController.editUserAddress);
 router.delete("/delete-user-address/:id", userController.deleteAddress);
+router.get(
+  "/get-transaction-history/:id",
+  userController.getTransactionHistory
+);
 
 module.exports = router;

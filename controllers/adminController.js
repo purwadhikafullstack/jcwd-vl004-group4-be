@@ -50,8 +50,12 @@ const addAdmin = async (req, res) => {
     password: req.body.password,
   };
 
-  const admin = await Admin.create(info);
-  res.status(200).send(admin);
+  try {
+    const admin = await Admin.create(info);
+    res.status(200).send({ dataRegister: admin, message: "New Admin Added" });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 };
 
 const forgotPasswordAdmin = async (req, res) => {
