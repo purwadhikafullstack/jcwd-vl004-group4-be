@@ -25,7 +25,7 @@ const modify_transaction = async (req, res) => {
     );
     // set adminId in order_headers
     result = await InvoiceHeaders.update(
-      { adminId: req.body.adminId },
+      { status: req.body.is_confirmed ? "paid" : "unpaid" },
       {
         where: {
           id: req.body.headerId,
@@ -82,8 +82,7 @@ const getDisplayTransaction = async (req, res) => {
     order: [["createdAt", "DESC"]],
     include: [
       Users,
-      Admins,
-      PaymentConfirm,
+      { model: PaymentConfirm, include: Admins },
       {
         model: InvoiceDetails,
         include: [Products],
