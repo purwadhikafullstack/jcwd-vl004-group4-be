@@ -22,9 +22,7 @@ const getDisplayReport = async (req, res) => {
 
   const rowCount = await InvoiceHeaders.count({
     where: {
-      adminId: {
-        [Op.ne]: null, // only include confirmed invoices in report
-      },
+      status: "paid",
     },
   });
 
@@ -34,16 +32,13 @@ const getDisplayReport = async (req, res) => {
     offset: offset,
     include: [
       Users,
-      Admins,
       {
         model: InvoiceDetails,
         include: [Products],
       },
     ],
     where: {
-      adminId: {
-        [Op.ne]: null, // only include confirmed invoices in report
-      },
+      status: "paid",
     },
   });
 
