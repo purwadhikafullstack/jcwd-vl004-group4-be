@@ -6,7 +6,6 @@ const path = require("path");
 const { QueryTypes } = require("sequelize");
 const { sequelize } = require("../models");
 
-
 // create main Model
 const Product = db.products;
 const Category = db.categories;
@@ -90,18 +89,18 @@ const getAllProducts = async (req, res) => {
   });
 };
 
-const getBestSeller = async (req, res) => {
-  const bestSeller = await sequelize.query(
-    `
-    SELECT productId, SUM(qty) AS totalQty
-    FROM invoice_details
-    GROUP BY productId
-    ORDER BY SUM(qty) DESC
-    LIMIT 8;`,
-    { type: QueryTypes.SELECT }
-  );
-  res.status(200).send(bestSeller);
-};
+// const getBestSeller = async (req, res) => {
+//   const bestSeller = await sequelize.query(
+//     `
+//     SELECT productId, SUM(qty) AS totalQty
+//     FROM invoice_details
+//     GROUP BY productId
+//     ORDER BY SUM(qty) DESC
+//     LIMIT 8;`,
+//     { type: QueryTypes.SELECT }
+//   );
+//   res.status(200).send(bestSeller);
+// };
 
 // 3. get single product
 const getProductById = async (req, res) => {
@@ -182,6 +181,6 @@ module.exports = {
   deleteProduct,
   restoreProduct,
   upload,
-  getBestSeller,
+  // getBestSeller,
   DFAllProducts,
 };
