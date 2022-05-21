@@ -112,7 +112,15 @@ const adminKeepLogin = async (req, res) => {
   try {
     const keepLogin = await Admin.findByPk(req.user.id);
     // res.status(200).send(keepLogin);
-    let { id, username, email, password, createdAt, updatedAt } = keepLogin;
+    let {
+      id,
+      username,
+      email,
+      password,
+      createdAt,
+      updatedAt,
+      is_super_admin,
+    } = keepLogin;
 
     let token = createToken({
       id,
@@ -121,6 +129,7 @@ const adminKeepLogin = async (req, res) => {
       password,
       createdAt,
       updatedAt,
+      is_super_admin,
     });
 
     res
