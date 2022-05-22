@@ -59,7 +59,7 @@ module.exports = {
         createdAt: date,
         updatedAt: date,
         userId: faker.datatype.number({ min: 1, max: 20 }),
-        adminId: is_confirmed ? adminId : null,
+        status: is_confirmed ? "paid" : "unpaid",
       });
     }
 
