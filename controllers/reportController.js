@@ -9,8 +9,8 @@ const Admins = db.admins;
 const PaymentConfirm = db.payment_confirmations;
 
 const getDisplayReport = async (req, res) => {
-  if (!req.query.adminId)
-    return res.status(400).send({ message: "adminId is required" });
+  // if (!req.query.adminId)
+  //   return res.status(400).send({ message: "adminId is required" });
 
   // by default limit is 5
   let limit = 10;
@@ -20,16 +20,21 @@ const getDisplayReport = async (req, res) => {
   let offset = 0;
   if (req.query.offset) offset = +req.query.offset;
 
+  
+console.log(req.user)
+
   const rowCount = await InvoiceHeaders.count({
     where: {
       status: "paid",
     },
+
   });
 
   // Model.findAll() : read the whole products table
   let items = await InvoiceHeaders.findAll({
     limit: limit,
     offset: offset,
+    order: [["createdAt", "DESC"]],
     include: [
       Users,
       {
@@ -50,8 +55,8 @@ const getDisplayReport = async (req, res) => {
 };
 
 const getSummaryReport = async (req, res) => {
-  if (!req.query.adminId)
-    return res.status(400).send({ message: "adminId is required" });
+  // if (!req.query.adminId)
+  //   return res.status(400).send({ message: "adminId is required" });
 
   let date = new Date();
   let max = date.toISOString().slice(0, 19).replace("T", " ");
@@ -140,6 +145,7 @@ const getProfitChart = async (req, res) => {
 
   res.status(200).send(profitChart);
 };
+
 
 module.exports = {
   getDisplayReport,

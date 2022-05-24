@@ -1,5 +1,5 @@
 const db = require("../models");
-const { sequelize } = require("../models");
+const { sequelize, invoice_details } = require("../models");
 const { Op } = require("sequelize");
 const InvoiceHeaders = db.invoice_headers;
 const InvoiceDetails = db.invoice_details;
@@ -10,8 +10,8 @@ const PaymentConfirm = db.payment_confirmations;
 
 const modify_transaction = async (req, res) => {
   console.log(req.body);
-  if (!req.body.adminId || !req.body.headerId)
-    return res.status(400).send({ message: "adminId, headerId is required" });
+  // if (!req.body.adminId || !req.body.headerId)
+  //   return res.status(400).send({ message: "adminId, headerId is required" });
 
   try {
     // set is_confirmed and adminId in payment_confirmation
@@ -32,7 +32,16 @@ const modify_transaction = async (req, res) => {
         },
       }
     );
-    return res.status(200).send({ message: "Success" });
+
+    const paidProducts = await InvoiceDetails.findAll({ where: { invoiceHeaderId: req.body.headerId }, include: [{ model: Products }] })
+    await paidProducts.map(product => {
+      Products.update(
+        { stock: product.product.stock - product.qty },
+        { where: { id: product.product.id } }
+      )
+    })
+
+    return res.status(200).send({ message: "Success", paidProducts });
   } catch (err) {
     console.log(err);
     return res.status(500).send({ message: "Server error occured: " + err });
@@ -40,8 +49,8 @@ const modify_transaction = async (req, res) => {
 };
 
 const getDisplayTransaction = async (req, res) => {
-  if (!req.query.adminId)
-    return res.status(400).send({ message: "adminId is required" });
+  // if (!req.query.adminId)
+  //   return res.status(400).send({ message: "adminId is required" });
 
   console.log(req.query);
   let date = new Date();
@@ -55,9 +64,6 @@ const getDisplayTransaction = async (req, res) => {
   if (req.query.min) min = req.query.min;
   if (req.query.max) max = req.query.max;
 
-  if (!req.query.adminId)
-    return res.status(400).send({ message: "adminId is required" });
-
   // by default limit is 5
   let limit = 10;
   if (req.query.limit) limit = +req.query.limit;
@@ -65,6 +71,8 @@ const getDisplayTransaction = async (req, res) => {
   // by default offset is 0
   let offset = 0;
   if (req.query.offset) offset = +req.query.offset;
+
+  console.log("user", req.user)
 
   const rowCount = await InvoiceHeaders.count({
     where: {
@@ -102,6 +110,8 @@ const getDisplayTransaction = async (req, res) => {
     items,
   });
 };
+
+
 
 module.exports = {
   getDisplayTransaction,
