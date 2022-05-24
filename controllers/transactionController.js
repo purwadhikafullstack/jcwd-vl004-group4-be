@@ -1,5 +1,5 @@
 const db = require("../models");
-const { sequelize } = require("../models");
+const { sequelize, invoice_details } = require("../models");
 const { Op } = require("sequelize");
 const InvoiceHeaders = db.invoice_headers;
 const InvoiceDetails = db.invoice_details;
@@ -32,7 +32,16 @@ const modify_transaction = async (req, res) => {
         },
       }
     );
-    return res.status(200).send({ message: "Success" });
+
+    const paidProducts = await InvoiceDetails.findAll({ where: { invoiceHeaderId: req.body.headerId }, include: [{ model: Products }] })
+    await paidProducts.map(product => {
+      Products.update(
+        { stock: product.product.stock - product.qty },
+        { where: { id: product.product.id } }
+      )
+    })
+
+    return res.status(200).send({ message: "Success", paidProducts });
   } catch (err) {
     console.log(err);
     return res.status(500).send({ message: "Server error occured: " + err });
@@ -63,7 +72,7 @@ const getDisplayTransaction = async (req, res) => {
   let offset = 0;
   if (req.query.offset) offset = +req.query.offset;
 
-  console.log("user",req.user)
+  console.log("user", req.user)
 
   const rowCount = await InvoiceHeaders.count({
     where: {
