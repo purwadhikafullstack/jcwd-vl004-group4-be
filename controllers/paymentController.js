@@ -18,9 +18,16 @@ const add = async (req, res) => {
     const userId = +req.params.userId
 
     const payment = await paymentConfirmation.create(data)
-    await InvoiceHeader.update(
+    const latestHeader = await InvoiceHeader.findOne({
+        where: { userId: userId },
+        order: [['createdAt', 'DESC']]
+    })
+    await latestHeader.update(
         { status: 'pending' },
-        { where: { userId: userId } }
+        {
+            where: { userId: userId },
+            order: [['createdAt', 'DESC']]
+        }
     )
 
     await Cart.destroy({ where: { userId: userId } })

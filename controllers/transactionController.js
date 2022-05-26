@@ -25,7 +25,7 @@ const modify_transaction = async (req, res) => {
     );
     // set adminId in order_headers
     result = await InvoiceHeaders.update(
-      { status: req.body.is_confirmed ? "paid" : "unpaid" },
+      { status: req.body.is_confirmed ? "on process" : "rejected" },
       {
         where: {
           id: req.body.headerId,
