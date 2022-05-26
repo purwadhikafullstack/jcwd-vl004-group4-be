@@ -33,13 +33,16 @@ const modify_transaction = async (req, res) => {
       }
     );
 
-    const paidProducts = await InvoiceDetails.findAll({ where: { invoiceHeaderId: req.body.headerId }, include: [{ model: Products }] })
-    await paidProducts.map(product => {
+    const paidProducts = await InvoiceDetails.findAll({
+      where: { invoiceHeaderId: req.body.headerId },
+      include: [{ model: Products }],
+    });
+    await paidProducts.map((product) => {
       Products.update(
         { stock: product.product.stock - product.qty },
         { where: { id: product.product.id } }
-      )
-    })
+      );
+    });
 
     return res.status(200).send({ message: "Success", paidProducts });
   } catch (err) {
@@ -72,7 +75,7 @@ const getDisplayTransaction = async (req, res) => {
   let offset = 0;
   if (req.query.offset) offset = +req.query.offset;
 
-  console.log("user", req.user)
+  console.log("user", req.user);
 
   const rowCount = await InvoiceHeaders.count({
     where: {
@@ -111,9 +114,32 @@ const getDisplayTransaction = async (req, res) => {
   });
 };
 
+const approveTransaction = async (req, res) => {
+  const userId = +req.params.id;
+  try {
+    let approved = await InvoiceHeaders.update(
+      { status: "completed" },
+      {
+        where: {
+          userId: userId,
+          id: req.body.id,
+        },
+      }
+    );
 
+    res
+      .status(200)
+      .send({
+        success: true,
+        message: "Thank you for shopping at Pharmadika, enjoy our products",
+      });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
 
 module.exports = {
   getDisplayTransaction,
   modify_transaction,
+  approveTransaction,
 };

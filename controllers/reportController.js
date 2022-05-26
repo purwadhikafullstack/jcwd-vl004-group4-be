@@ -20,14 +20,13 @@ const getDisplayReport = async (req, res) => {
   let offset = 0;
   if (req.query.offset) offset = +req.query.offset;
 
-  
-console.log(req.user)
+  console.log(req.user);
 
   const rowCount = await InvoiceHeaders.count({
+    // ubah status selesai transaksi dari "paid" jadi "completed"
     where: {
-      status: "paid",
+      status: "completed",
     },
-
   });
 
   // Model.findAll() : read the whole products table
@@ -43,7 +42,8 @@ console.log(req.user)
       },
     ],
     where: {
-      status: "paid",
+      // ubah status selesai transaksi dari "paid" jadi "completed"
+      status: "completed",
     },
   });
 
@@ -145,7 +145,6 @@ const getProfitChart = async (req, res) => {
 
   res.status(200).send(profitChart);
 };
-
 
 module.exports = {
   getDisplayReport,
