@@ -3,8 +3,6 @@ const multer = require("multer");
 const { Op } = require("sequelize");
 // path : access and intereact with the file system
 const path = require("path");
-const { QueryTypes } = require("sequelize");
-const { sequelize } = require("../models");
 
 // create main Model
 const Product = db.products;
@@ -36,57 +34,61 @@ const addProduct = async (req, res) => {
 
 // 2. get all products
 const getAllProducts = async (req, res) => {
-  let filters = {};
-  console.log(filters);
+  try {
+    let filters = {};
 
-  if (req.query.bottle_capacity) {
-    let arrayOfBottleCap = req.query.bottle_capacity.split(",");
-    console.log(arrayOfBottleCap);
-    // Op.in means "WHERE IN" in sql. It will match if the bottle_capacity matches any value in the array.
-    filters.bottle_capacity = { [Op.in]: arrayOfBottleCap };
-    console.log(filters);
+    if (req.query.bottle_capacity) {
+      let arrayOfBottleCap = req.query.bottle_capacity.split(",");
+      console.log(arrayOfBottleCap);
+      // Op.in means "WHERE IN" in sql. It will match if the bottle_capacity matches any value in the array.
+      filters.bottle_capacity = { [Op.in]: arrayOfBottleCap };
+      console.log(filters);
+    }
+    if (req.query.category) {
+      let arrayOfCategory = req.query.category.split(",");
+      filters["$Category.name$"] = {
+        [Op.in]: arrayOfCategory,
+      };
+    }
+
+    if (req.query.search)
+      filters.name = {
+        [Op.substring]: req.query.search,
+      };
+
+    // by default it will sort by name and asc
+    let sort = ["name", "ASC"];
+    if (req.query.sortField && req.query.sortDirection)
+      sort = [req.query.sortField, req.query.sortDirection];
+
+    // by default limit is 15
+    let limit = 8;
+    if (req.query.limit) limit = +req.query.limit;
+
+    // by default offset is 0
+    let offset = 0;
+    if (req.query.offset) offset = +req.query.offset;
+
+    const rowCount = await Product.count({ where: filters, include: Category });
+
+    // Model.findAll() : read the whole products table
+    let allProducts = await Product.findAll({
+      include: Category,
+      where: filters,
+      order: [sort],
+      limit: limit,
+      offset: offset,
+    });
+
+    res.status(200).send({
+      pageCount: Math.ceil(rowCount / limit),
+      rowCount,
+      allProducts,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send({ message: "Server error occured: " + err });
   }
-  if (req.query.category) {
-    let arrayOfCategory = req.query.category.split(",");
-    filters["$Category.name$"] = {
-      [Op.in]: arrayOfCategory,
-    };
-  }
-
-  if (req.query.search)
-    filters.name = {
-      [Op.substring]: req.query.search,
-    };
-
-  // by default it will sort by name and asc
-  let sort = ["name", "ASC"];
-  if (req.query.sortField && req.query.sortDirection)
-    sort = [req.query.sortField, req.query.sortDirection];
-
-  // by default limit is 15
-  let limit = 8;
-  if (req.query.limit) limit = +req.query.limit;
-
-  // by default offset is 0
-  let offset = 0;
-  if (req.query.offset) offset = +req.query.offset;
-
-  const rowCount = await Product.count({ where: filters, include: Category });
-
-  // Model.findAll() : read the whole products table
-  let allProducts = await Product.findAll({
-    include: Category,
-    where: filters,
-    order: [sort],
-    limit: limit,
-    offset: offset,
-  });
-
-  res.status(200).send({
-    pageCount: Math.ceil(rowCount / limit),
-    rowCount,
-    allProducts,
-  });
 };
 
 // const getBestSeller = async (req, res) => {

@@ -23,8 +23,9 @@ module.exports = {
           precision: 1000, // if precision is 1000 then last 3 digits of the random price will be zero
         });
 
+        let quantity = faker.datatype.number({ min: 1, max: 10 }); // qty of order
         details.push({
-          qty: faker.datatype.number({ min: 1, max: 10 }), // qty of order
+          qty: quantity,
           price: price,
           createdAt: date,
           productId: faker.datatype.number({ min: 1, max: 50 }), // productId
@@ -32,7 +33,7 @@ module.exports = {
           invoiceHeaderId: headerId,
         });
 
-        totalPrice = totalPrice + price;
+        totalPrice = totalPrice + price * quantity;
       }
 
       let is_confirmed = faker.datatype.boolean();
@@ -51,15 +52,25 @@ module.exports = {
         adminId: is_confirmed ? adminId : null, // if confirmed then set adminId randomly 1 to 4
       });
 
+      let shipping_price = faker.datatype.number({ min: 10000, max: 20000 });
+
+      let status;
+
+      if (is_confirmed) {
+        status = faker.datatype.boolean() ? "completed" : "on process";
+      } else {
+        status = faker.datatype.boolean() ? "pending" : "rejected";
+      }
+
       headers.push({
         id: headerId,
         invoice_code: "100" + (i + 1), // starting invoice code from 1000 then go in sequence
-        shipping_price: faker.datatype.number({ min: 10000, max: 20000 }),
-        total_price: totalPrice,
+        shipping_price: shipping_price,
+        total_price: totalPrice + shipping_price,
         createdAt: date,
         updatedAt: date,
         userId: faker.datatype.number({ min: 1, max: 20 }),
-        status: is_confirmed ? "paid" : "unpaid",
+        status: status,
       });
     }
 

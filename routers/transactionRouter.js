@@ -7,7 +7,7 @@ router.get(
   auth,
   transactionController.getDisplayTransaction
 );
-router.post("/update-transaction", transactionController.modify_transaction);
+router.post("/update-transaction", auth, transactionController.modify_transaction);
 router.post(
   "/approve-transaction/:id",
   transactionController.approveTransaction
