@@ -1,3 +1,4 @@
+require("dotenv").config();
 const Crypto = require("crypto");
 
 module.exports = (sequelize, DataTypes) => {
@@ -76,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       hooks: {
         afterValidate: (user, options) => {
-          user.password = Crypto.createHmac("sha1", "hash123")
+          user.password = Crypto.createHmac("sha1", process.env.CRYPTO_KEY)
             .update(user.password)
             .digest("hex");
         },

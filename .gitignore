@@ -1,4 +1,4 @@
 /node_modules
-/public/productImages/*
 /config
 /public/paymentConfirmation
+/.env

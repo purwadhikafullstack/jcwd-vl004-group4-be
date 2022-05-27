@@ -1,8 +1,9 @@
+require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 module.exports = {
   auth: (req, res, next) => {
-    jwt.verify(req.token, "private123", (err, decode) => {
+    jwt.verify(req.token, process.env.JWT_KEY, (err, decode) => {
       if (err) {
         return res.status(401).send("user not authenticated");
       }
@@ -14,7 +15,7 @@ module.exports = {
     });
   },
   resetPassword: (req, res, next) => {
-    jwt.verify(req.token, "private123", (err, decode) => {
+    jwt.verify(req.token, process.env.JWT_KEY, (err, decode) => {
       if (err) {
         return res.status(401).send("password reset failed");
       }
@@ -26,7 +27,7 @@ module.exports = {
     });
   },
   keepLogin: (req, res, next) => {
-    jwt.verify(req.token, "private123", (err, decode) => {
+    jwt.verify(req.token, process.env.JWT_KEY, (err, decode) => {
       if (err) {
         return res.status(500).send(err);
       }
