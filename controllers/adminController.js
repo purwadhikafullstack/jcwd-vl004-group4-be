@@ -1,3 +1,4 @@
+require("dotenv").config();
 const db = require("../models");
 const { createToken } = require("../helper/createToken");
 const Crypto = require("crypto");
@@ -13,7 +14,7 @@ const getAdmin = async (req, res) => {
     password: req.body.password,
   };
 
-  info.password = Crypto.createHmac("sha1", "hash123")
+  info.password = Crypto.createHmac("sha1", process.env.CRYPTO_KEY)
     .update(info.password)
     .digest("hex");
 
@@ -73,7 +74,7 @@ const forgotPasswordAdmin = async (req, res) => {
       from: `ADMIN <nodemailer.purwadhika@gmail.com>`,
       to: `${email}`,
       subject: `Admin Reset Password`,
-      html: `<a href='http://localhost:3000/admin/reset-password/${token}'>Click here for reset password</a>`,
+      html: `<a href='${process.env.CLIENT_URL}/admin/reset-password/${token}'>Click here for reset password</a>`,
     };
 
     transporter.sendMail(mail, (err, result) => {

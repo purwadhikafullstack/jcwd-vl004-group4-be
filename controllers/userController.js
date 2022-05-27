@@ -1,3 +1,4 @@
+require("dotenv").config();
 const db = require("../models");
 const { createToken } = require("../helper/createToken");
 const transporter = require("../helper/nodemailer");
@@ -58,7 +59,7 @@ const addUser = async (req, res) => {
         from: `ADMIN <nodemailer.purwadhika@gmail.com>`,
         to: `${email}`,
         subject: `Account Verification`,
-        html: `<a href='http://localhost:3000/verification/${token}'>Click here for verification</a>`,
+        html: `<a href='${process.env.CLIENT_URL}/verification/${token}'>Click here for verification</a>`,
       };
 
       transporter.sendMail(mail, (err, result) => {
@@ -96,7 +97,7 @@ const getUser = async (req, res) => {
     password: req.body.password,
   };
 
-  info.password = Crypto.createHmac("sha1", "hash123")
+  info.password = Crypto.createHmac("sha1", process.env.CRYPTO_KEY)
     .update(info.password)
     .digest("hex");
 
@@ -170,7 +171,7 @@ const forgotPasswordUser = async (req, res) => {
       from: `ADMIN <nodemailer.purwadhika@gmail.com>`,
       to: `${email}`,
       subject: `Reset Password`,
-      html: `<a href='http://localhost:3000/reset-password/${token}'>Click here for reset password</a>`,
+      html: `<a href='${process.env.CLIENT_URL}/reset-password/${token}'>Click here for reset password</a>`,
     };
 
     transporter.sendMail(mail, (err, result) => {
@@ -279,7 +280,7 @@ const editUserData = async (req, res) => {
 const checkPassword = async (req, res) => {
   const id = +req.params.id;
 
-  password = Crypto.createHmac("sha1", "hash123")
+  password = Crypto.createHmac("sha1", process.env.CRYPTO_KEY)
     .update(req.body.password)
     .digest("hex");
   try {
