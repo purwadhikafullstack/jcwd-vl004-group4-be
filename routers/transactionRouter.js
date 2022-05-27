@@ -7,10 +7,10 @@ router.get(
   auth,
   transactionController.getDisplayTransaction
 );
+router.post("/update-transaction", auth, transactionController.modify_transaction);
 router.post(
-  "/update-transaction",
-  auth,
-  transactionController.modify_transaction
+  "/approve-transaction/:id",
+  transactionController.approveTransaction
 );
 
 module.exports = router;

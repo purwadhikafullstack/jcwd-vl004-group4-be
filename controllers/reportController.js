@@ -1,12 +1,10 @@
 const db = require("../models");
 const { sequelize } = require("../models");
-const { QueryTypes, Op } = require("sequelize");
+const { QueryTypes } = require("sequelize");
 const InvoiceHeaders = db.invoice_headers;
 const InvoiceDetails = db.invoice_details;
 const Products = db.products;
 const Users = db.users;
-const Admins = db.admins;
-const PaymentConfirm = db.payment_confirmations;
 
 const getDisplayReport = async (req, res) => {
   try {

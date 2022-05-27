@@ -115,7 +115,32 @@ const getDisplayTransaction = async (req, res) => {
   }
 };
 
+const approveTransaction = async (req, res) => {
+  const userId = +req.params.id;
+  try {
+    let approved = await InvoiceHeaders.update(
+      { status: "completed" },
+      {
+        where: {
+          userId: userId,
+          id: req.body.id,
+        },
+      }
+    );
+
+    res
+      .status(200)
+      .send({
+        success: true,
+        message: "Thank you for shopping at Pharmadika, enjoy our products",
+      });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 module.exports = {
   getDisplayTransaction,
   modify_transaction,
+  approveTransaction,
 };
